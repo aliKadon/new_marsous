@@ -110,7 +110,6 @@ class _HomeWorkViewState extends State<HomeWorkView> {
                                     ),
                                   ),
                           )),
-                      Text("asdasdasdasd"),
                       Padding(
                         padding: EdgeInsets.only(top: 50.h),
                         child: Column(
