@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+import 'package:marsous1/models/session_model.dart';
 
 import '../resources/color_manager.dart';
 import '../resources/font_manager.dart';
 
 class PreviousLessonConstantItem extends StatefulWidget {
-  const PreviousLessonConstantItem({super.key});
+  final SessionModel sessionModel;
+
+  const PreviousLessonConstantItem({super.key, required this.sessionModel});
 
   @override
   State<PreviousLessonConstantItem> createState() =>
@@ -35,7 +39,7 @@ class _PreviousLessonConstantItemState
                     width: 5.w,
                   ),
                   Text(
-                    "الخميس | 16 مارس 2023",
+                    DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(widget.sessionModel.date!)),
                     style:
                         TextStyle(color: Colors.black, fontSize: FontSize.s14),
                   ),
@@ -50,12 +54,30 @@ class _PreviousLessonConstantItemState
                 thickness: 2,
                 color: Colors.grey.withOpacity(0.2),
               ),
-              lessonDetailsItem(title: "التسميع", sora: "البقره ( 150 - 200 )"),
-              lessonDetailsItem(
-                  title: "المراجعه البعيده", sora: "البقره ( 150 - 200 )"),
-              lessonDetailsItem(
-                  title: "المراجعة القريبة ", sora: "البقره ( 150 - 200 )"),
-              lessonDetailsItem(title: "التجويد", sora: "البقره ( 150 - 200 )"),
+              widget.sessionModel.lessonMemorize == null ||
+                      widget.sessionModel.lessonMemorize!.isEmpty
+                  ? Container()
+                  : lessonDetailsItem(
+                      title: "التسميع",
+                      sora: "${widget.sessionModel.lessonMemorize}"),
+              widget.sessionModel.lessonFarReview == null ||
+                      widget.sessionModel.lessonFarReview!.isEmpty
+                  ? Container()
+                  : lessonDetailsItem(
+                      title: "المراجعه البعيده",
+                      sora: "${widget.sessionModel.lessonFarReview}"),
+              widget.sessionModel.lessonNearReview == null ||
+                      widget.sessionModel.lessonNearReview!.isEmpty
+                  ? Container()
+                  : lessonDetailsItem(
+                      title: "المراجعة القريبة ",
+                      sora: "${widget.sessionModel.lessonNearReview}"),
+              widget.sessionModel.lessonTajweed == null ||
+                      widget.sessionModel.lessonTajweed!.isEmpty
+                  ? Container()
+                  : lessonDetailsItem(
+                      title: "التجويد",
+                      sora: "${widget.sessionModel.lessonTajweed}"),
               SizedBox(height: 20.h),
               Align(
                 alignment: Alignment.center,

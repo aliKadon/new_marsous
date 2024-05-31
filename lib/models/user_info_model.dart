@@ -7,6 +7,9 @@ import 'children_model.dart';
 class UserInfoModel extends GetxController {
   String? userName;
   String? fullName;
+  String? firstName;
+  String? middleName;
+  String? lastName;
   String? email;
   String? phoneNumber;
   String? address;
@@ -39,10 +42,16 @@ class UserInfoModel extends GetxController {
     this.turtor,
     this.absenceCount,
     this.attendanceCount,
+    this.lastName,
+    this.middleName,
+    this.firstName,
   });
 
   factory UserInfoModel.fromJson(Map<String, dynamic> json) => UserInfoModel(
         image: json["image"],
+        firstName: json["firstName"],
+        lastName: json["lastName"],
+        middleName: json["middleName"],
         phoneNumber: json["phoneNumber"],
         email: json["email"],
         fullName: json["fullName"],

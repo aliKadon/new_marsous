@@ -3,20 +3,16 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-
 import '../preferences/shared_pref_controller.dart';
 import 'local_notifications_service.dart';
 
 class FirebaseMessagingService {
-
   static FirebaseMessagingService? _instance;
   FirebaseMessaging? _fcm;
   LocalNotificationsService? _localNotificationsService;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-
-  var c ;
-
+  var c;
 
   FirebaseMessagingService._() {
     _fcm = FirebaseMessaging.instance;
@@ -33,8 +29,6 @@ class FirebaseMessagingService {
     return _fcm?.getToken();
   }
 
-
-
   Future<void> init({required BuildContext context}) async {
     await _fcm?.requestPermission(
       alert: true,
@@ -46,11 +40,14 @@ class FirebaseMessagingService {
       sound: true,
     );
     String? token = await getToken();
-    print('fcm token : $token');
-    FirebaseMessaging.instance.subscribeToTopic('ghaf');
+    FirebaseMessaging.instance.subscribeToTopic('marsous');
+    // if (SharedPrefController().enableNotifications) {
+    //   FirebaseMessaging.instance.subscribeToTopic('marsous');
+    // }else {
+    //   FirebaseMessaging.instance.unsubscribeFromTopic('marsous');
+    // }
 
-    FirebaseMessaging.onMessage.listen((message) {
-
+    FirebaseMessaging.onMessage.listen((message) async {
       // on message.
       print('======================================i');
       print('on message');
@@ -69,17 +66,14 @@ class FirebaseMessagingService {
         print(notification);
         print(ms);
         // Map<String,dynamic> x = jsonEncode(message.toMap()) as Map<String, dynamic>;
-        // print(x);
 
-        if (SharedPrefController().enableNotifications) {
-          _localNotificationsService?.showNotification(
-            notification.title,
-            notification.body,
-            payload: jsonEncode(
-              message.toMap(),
-            ),
-          );
-        }
+        _localNotificationsService?.showNotification(
+          notification.title,
+          notification.body,
+          payload: jsonEncode(
+            message.toMap(),
+          ),
+        );
         //
         // if(c== 'ok') {
         //   Navigator.of(context).pushNamed(Routes.aboutAppRoute);
@@ -88,20 +82,17 @@ class FirebaseMessagingService {
     });
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       // on message opened app.
-      if(message.data != null || message.data.isEmpty) {
-        print('=====================there is data and the screen is :');
-        print(message.data['screenType1']);
-        // Get.toNamed('/${message.data['screen']}');
-        c= 'ok';
-
-      }
+      // if (message.data != null || message.data.isEmpty) {
+      //   // Get.toNamed('/${message.data['screen']}');
+      //   c = 'ok';
+      // }
       print('on message opened app');
       print(message.notification?.title);
       print(message.notification?.body);
       // _localNotificationsService!
       //     .onNotificationTapped(jsonEncode(message.toMap()));
     });
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
     // after opening notification when app is terminated.
     // RemoteMessage? remoteMessage =
     //     await FirebaseMessaging.instance.getInitialMessage();
@@ -112,15 +103,4 @@ class FirebaseMessagingService {
     //       .onNotificationTapped(jsonEncode(remoteMessage.toMap()));
     // }
   }
-}
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // on background.
-  // if(message.data != null || message.data.isEmpty) {
-  //   print('=====================there is data and the screen is :');
-  //   print(message.data['screen']);
-  //   Get.toNamed('/${message.data['screen']}');
-  //   // Navigator.of(context).pushNamed(Routes.aboutAppRoute);
-  // }
-  print("Handling a background message: ${message.messageId}");
 }

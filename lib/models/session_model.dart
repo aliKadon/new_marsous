@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 class SessionModel extends GetxController {
   String? id;
   String? courseId;
+  String? studentId;
   String? lessonMemorize;
   String? lessonNearReview;
   String? lessonFarReview;
@@ -47,13 +48,13 @@ class SessionModel extends GetxController {
     this.testFilePath,
     this.testGrade,
     this.studentFullName,
+    this.studentId,
   });
 
   void updateGrade(int grade) {
-   testGrade = grade;
-   update(["grade"]);
+    testGrade = grade;
+    update(["grade"]);
   }
-
 
   factory SessionModel.fromJson(Map<String, dynamic> json) => SessionModel(
         id: json["id"],
@@ -78,5 +79,6 @@ class SessionModel extends GetxController {
         testFilePath: json["testFilePath"],
         testGrade: json["testGrade"],
         studentFullName: json["studentFullName"],
+        studentId: json["studentId"],
       );
 }

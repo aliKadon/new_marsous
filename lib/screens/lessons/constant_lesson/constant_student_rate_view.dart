@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:marsous1/screens/constant_lesson/student_lesson_view.dart';
+import 'package:marsous1/screens/lessons/constant_lesson/student_lesson_view.dart';
 
+import '../../../resources/color_manager.dart';
+import '../../../widgets/student_widget/contsant_student_rating_widget.dart';
 
-import '../../resources/color_manager.dart';
-import '../../widgets/student_widget/contsant_student_rating_widget.dart';
 
 class ConstantStudentRateView extends StatelessWidget {
   const ConstantStudentRateView({super.key});

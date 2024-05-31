@@ -7,9 +7,9 @@ class LoadingDialogWidget extends StatelessWidget {
   final String? title;
 
   const LoadingDialogWidget({
-    Key? key,
+    super.key,
     this.title,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

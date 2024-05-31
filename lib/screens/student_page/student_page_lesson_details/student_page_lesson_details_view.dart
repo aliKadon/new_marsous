@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+import 'package:marsous1/models/session_model.dart';
 
 import '../../../resources/assets_manager.dart';
 import '../../../resources/color_manager.dart';
 import '../../../resources/font_manager.dart';
 
 class StudentPageLessonDetailsView extends StatelessWidget {
-  const StudentPageLessonDetailsView({super.key});
+  final SessionModel sessionModel;
+
+  const StudentPageLessonDetailsView({super.key, required this.sessionModel});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("مقرر الخميس | 16 مارس"),
+        title: Text(DateFormat('yMMMMEEEEd', 'ar').format(
+            DateTime.parse(sessionModel.date ?? "2024-04-18T15:15:00"))),
       ),
       body: Container(
         height: double.infinity,
@@ -33,7 +38,7 @@ class StudentPageLessonDetailsView extends StatelessWidget {
                   Text(
                     "سجل المنهج",
                     style:
-                        TextStyle(color: Colors.black, fontSize: FontSize.s16),
+                    TextStyle(color: Colors.black, fontSize: FontSize.s16),
                   ),
                 ],
               ),
@@ -50,34 +55,54 @@ class StudentPageLessonDetailsView extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    lessonItem(
-                        title: "سوره البقرة الايات ( 120-150 )",
-                        note: "لا يوجد ملاحظات",
+                    sessionModel.lessonMemorize == null ||
+                        sessionModel.lessonMemorize!.isEmpty
+                        ? Container()
+                        : lessonItem(
+                        title: "${sessionModel.lessonMemorize}",
+                        note: "",
                         type: "التسميع"),
-                    Divider(
+                    sessionModel.lessonMemorize == null ||
+                        sessionModel.lessonMemorize!.isEmpty
+                        ? Container()
+                        : Divider(
                       color: Colors.grey.withOpacity(0.3),
                       thickness: 1,
                     ),
-                    lessonItem(
-                        title: "سوره البقرة الايات ( 120-150 )",
-                        note: "لا يوجد ملاحظات",
+                    sessionModel.lessonFarReview == null ||
+                        sessionModel.lessonFarReview!.isEmpty
+                        ? Container()
+                        : lessonItem(
+                        title: "${sessionModel.lessonFarReview}",
+                        note: "",
                         type: "المراجعه البعيدة"),
-                    Divider(
+                    sessionModel.lessonFarReview == null ||
+                        sessionModel.lessonFarReview!.isEmpty
+                        ? Container()
+                        : Divider(
                       color: Colors.grey.withOpacity(0.3),
                       thickness: 1,
                     ),
-                    lessonItem(
-                        title: "سوره البقرة الايات ( 120-150 )",
-                        note: "لا يوجد ملاحظات",
+                    sessionModel.lessonNearReview == null ||
+                        sessionModel.lessonNearReview!.isEmpty
+                        ? Container()
+                        : lessonItem(
+                        title: "${sessionModel.lessonNearReview}",
+                        note: "",
                         type: "المراجعة القريبه"),
-                    Divider(
+                    sessionModel.lessonNearReview == null ||
+                        sessionModel.lessonNearReview!.isEmpty
+                        ? Container()
+                        : Divider(
                       color: Colors.grey.withOpacity(0.3),
                       thickness: 1,
                     ),
-                    lessonItem(
-                        title: "احكام النون الساكنة",
-                        note:
-                            "يجب مراجعه احكام التجويد قبل بدء الحفظ و يجب مراجعه احكام التجويد قبل بدء الحفظ و يجب مراجعه احكام التجويد قبل بدء الحفظ",
+                    sessionModel.lessonTajweed == null ||
+                        sessionModel.lessonTajweed!.isEmpty
+                        ? Container()
+                        : lessonItem(
+                        title: "${sessionModel.lessonTajweed}",
+                        note: "",
                         type: "التجويد"),
                   ],
                 ),
@@ -97,7 +122,7 @@ class StudentPageLessonDetailsView extends StatelessWidget {
                   Text(
                     "سؤال الواجب",
                     style:
-                        TextStyle(color: Colors.black, fontSize: FontSize.s16),
+                    TextStyle(color: Colors.black, fontSize: FontSize.s16),
                   ),
                 ],
               ),
@@ -105,23 +130,31 @@ class StudentPageLessonDetailsView extends StatelessWidget {
                 height: 15.h,
               ),
               Container(
+                width: double.infinity,
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(
                       Radius.circular(15.r),
                     )),
-                child: Row(
+                child: sessionModel.lessonTask == null ||
+                    sessionModel.lessonTask!.isEmpty
+                    ? Text("لا يوجد واجب",
+                    style: TextStyle(
+                        color: Colors.black, fontSize: FontSize.s14))
+                    : Row(
                   children: [
                     SizedBox(
                       width: 240.w,
                       child: Text(
-                          "اكتب ثلاث آيات من أول كل سورة مما يأتي : (الأنفال - الحجر - المنافقون )",
+                          "${sessionModel.lessonTask}",
                           style: TextStyle(
-                              color: Colors.black, fontSize: FontSize.s14)),
+                              color: Colors.black,
+                              fontSize: FontSize.s14)),
                     ),
                     const Spacer(),
-                    Container(
+                    sessionModel.taskAnswer!.isEmpty &&
+                        sessionModel.taskFilePath!.isEmpty ? Container(
                       padding: EdgeInsets.only(
                           top: 5.w, bottom: 5.w, right: 15.w, left: 15.w),
                       decoration: BoxDecoration(
@@ -130,6 +163,20 @@ class StudentPageLessonDetailsView extends StatelessWidget {
                       ),
                       child: Text(
                         "لم يكتمل",
+                        style: TextStyle(
+                            color: const Color(0x19E05858),
+                            fontWeight: FontWeight.w800,
+                            fontSize: FontSize.s14),
+                      ),
+                    ) : Container(
+                      padding: EdgeInsets.only(
+                          top: 5.w, bottom: 5.w, right: 15.w, left: 15.w),
+                      decoration: BoxDecoration(
+                        color: const Color(0x19E05858),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Text(
+                        "مكتمل",
                         style: TextStyle(
                             color: const Color(0xFFE05858),
                             fontWeight: FontWeight.w800,
@@ -158,29 +205,32 @@ class StudentPageLessonDetailsView extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(title,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: FontSize.s14,
-                      fontWeight: FontWeight.w500)),
+              SizedBox(
+                width: 300.w,
+                child: Text(title,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: FontSize.s14,
+                        fontWeight: FontWeight.w500)),
+              ),
               const Spacer(),
-              Stack(
-                children: [
-                  Image.asset(
-                    ImageAssets.star,
-                    height: 40.h,
-                  ),
-                  Positioned.fill(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "10",
-                        style: TextStyle(color: ColorManager.primary),
-                      ),
-                    ),
-                  ),
-                ],
-              )
+              // Stack(
+              //   children: [
+              //     Image.asset(
+              //       ImageAssets.star,
+              //       height: 40.h,
+              //     ),
+              //     Positioned.fill(
+              //       child: Align(
+              //         alignment: Alignment.center,
+              //         child: Text(
+              //           "10",
+              //           style: TextStyle(color: ColorManager.primary),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // )
             ],
           ),
           Text(type, style: TextStyle(color: ColorManager.primary)),

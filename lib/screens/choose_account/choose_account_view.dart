@@ -116,17 +116,17 @@ class _ChooseAccountViewState extends State<ChooseAccountView> with Helpers {
                             onTap: () {
                               setState(() {
                                 controller.isSelected = true;
+                                _accountGetXController.tokenAccount =
+                                AppSharedData.userInfoModel!.myToken!;
+                                SharedPrefController().setToken(
+                                    AppSharedData.userInfoModel!.myToken!);
                                 controller.update();
                               });
 
-                              _accountGetXController.tokenAccount =
-                                  AppSharedData.userInfoModel!.myToken!;
-                              SharedPrefController().setToken(
-                                  AppSharedData.userInfoModel!.myToken!);
+
                             },
                             child: ChooseAccountItem(
-                                isSelect: _accountGetXController.isSelected,
-                                userInfoModel: AppSharedData.userInfoModel!),
+                                isSelect: _accountGetXController.isSelected,),
                           ),
                           const Divider(
                             thickness: 1,

@@ -17,6 +17,7 @@ class ImageAssets {
   static const String minus = "$imagePath/minus.png";
   static const String kwFlag = "$imagePath/kw_flag.png";
   static const String accountProfileImage = "$imagePath/account_profile_image.png";
+  static const String connectionLost = "$imagePath/connection_lost.png";
 
 }
 

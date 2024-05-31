@@ -1,15 +1,17 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 
-
+import '../../notifications/firebase_messaging_service.dart';
 import '../../preferences/shared_pref_controller.dart';
 import '../../resources/assets_manager.dart';
 import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../login/controller/profile_getx_controller.dart';
+import 'controller/notification_setting_getx_controller.dart';
 
 class SettingView extends StatefulWidget {
   const SettingView({super.key});
@@ -22,6 +24,8 @@ class _SettingViewState extends State<SettingView> {
   //controller
   final ProfileGetXController _profileGetXController =
       Get.put(ProfileGetXController());
+  final NotificationSettingGetxController _notificationGetxController =
+      Get.put(NotificationSettingGetxController());
 
   bool isSelected = SharedPrefController().enableNotifications;
   var passwordVisible = true;
@@ -34,7 +38,6 @@ class _SettingViewState extends State<SettingView> {
 
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,18 +70,32 @@ class _SettingViewState extends State<SettingView> {
                       ),
                       Text(
                         "الإشعارات",
-                        style:
-                            TextStyle(color: Colors.black, fontSize: FontSize.s16),
+                        style: TextStyle(
+                            color: Colors.black, fontSize: FontSize.s16),
                       ),
                       const Spacer(),
                       CupertinoSwitch(
                         activeColor: ColorManager.primary,
                         value: isSelected,
-                        onChanged: (value) {
+                        onChanged: (value) async {
                           setState(() {
                             isSelected = !isSelected;
-                            SharedPrefController().setEnableNotification(isSelected);
+                            SharedPrefController()
+                                .setEnableNotification(isSelected);
                           });
+
+                          if (SharedPrefController().enableNotifications) {
+                            var newFCMToken = await FirebaseMessagingService
+                                .instance
+                                .getToken();
+                            if (newFCMToken != null) {
+                              _notificationGetxController.refreshFcm(
+                                  newFcm: newFCMToken, context: context);
+                            }
+                            print("new fcm token : $newFCMToken");
+                          } else {
+                            await FirebaseMessaging.instance.deleteToken();
+                          }
                         },
                       )
                     ],
@@ -138,7 +155,6 @@ class _SettingViewState extends State<SettingView> {
                           ),
                           // suffixIconColor: Colors.red,
                           focusColor: ColorManager.primary,
-
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -224,8 +240,8 @@ class _SettingViewState extends State<SettingView> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "من فضلك أدخل تأكيد كلمة المرور";
-
-                          }else if(value != _profileGetXController.newPassword.text) {
+                          } else if (value !=
+                              _profileGetXController.newPassword.text) {
                             return "كلمة السر غير متطابقة";
                           }
                           return null;
@@ -258,9 +274,11 @@ class _SettingViewState extends State<SettingView> {
                               ),
                             ),
                             onPressed: () {
-                              _profileGetXController.changePassword(context: context);
+                              _profileGetXController.changePassword(
+                                  context: context);
                             },
-                            child: const Text("تأكيد",style: TextStyle(color: Colors.white)),
+                            child: const Text("تأكيد",
+                                style: TextStyle(color: Colors.white)),
                           ),
                         ),
                       ),

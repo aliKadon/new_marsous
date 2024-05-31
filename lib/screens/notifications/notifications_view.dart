@@ -25,6 +25,7 @@ class _NotificationsViewState extends State<NotificationsView> {
       Get.find<MarsousGetXController>();
   final NotificationModel _notificationModel = Get.put(NotificationModel());
 
+
   @override
   void initState() {
     _marsousGetXController.getNotifications(context: context);
@@ -32,7 +33,6 @@ class _NotificationsViewState extends State<NotificationsView> {
   }
 
   var isLoading = false;
-
 
   @override
   Widget build(BuildContext context) {

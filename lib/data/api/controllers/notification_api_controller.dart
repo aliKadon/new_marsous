@@ -12,9 +12,7 @@ class NotificationApiController with ApiHelper {
   // var sharedTokedChild = SharedPrefController().tokenChild;
 
   Future<List<NotificationModel>> getNotifications() async {
-    // print("header child : $sharedTokedChild");
-    // print("header child : ${sharedTokedChild.isEmpty}");
-    // print("header student : $headers");
+
     var url = Uri.parse("${ApiSettings.baseUrl}/Marsous/get-my-notifications");
     var response = await http.get(url,
         headers: headers);
@@ -33,17 +31,13 @@ class NotificationApiController with ApiHelper {
   }
 
   Future<ApiResponse> makeNotificationAsRead({required String notiId}) async {
-    // print("header child : $sharedTokedChild");
-    // print("header child : ${sharedTokedChild.isEmpty}");
+
     var url = Uri.parse(
         "${ApiSettings.baseUrl}/Marsous/mark-notification-as-read?notiId=$notiId");
     var response = await http.post(
       url,
       headers: headers,
     );
-
-    print("notification - mark as read response status Code: ${response.statusCode}");
-    print("notification - mark as read response body: ${response.body}");
 
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);

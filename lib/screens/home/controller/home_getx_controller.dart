@@ -11,6 +11,7 @@ class HomeGetXController extends GetxController {
   List<SessionModel> sessionModel = [];
   List<SessionModel> homeWorkSessions = [];
   List<SessionModel> testSessions = [];
+
   int index = 0;
   var isLoading = true;
 
@@ -32,7 +33,6 @@ class HomeGetXController extends GetxController {
           pageSize: pageSize, pageIndex: pageIndex);
       //count the session that have home to use in list view as a item count.
       while (index < sessionModel.length) {
-
         if (sessionModel[index].lessonTask!.isNotEmpty) {
           // homeWorkCount++;
           homeWorkSessions.add(sessionModel[index]);
@@ -42,10 +42,11 @@ class HomeGetXController extends GetxController {
         }
         index++;
       }
-      print("student - homeWork count : ${homeWorkSessions.length}");
       update();
     } catch (e) {
       print("student - get my session error : $e");
     }
   }
+
+
 }

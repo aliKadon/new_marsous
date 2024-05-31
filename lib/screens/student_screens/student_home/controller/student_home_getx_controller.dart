@@ -33,8 +33,8 @@ class StudentHomeGetXController extends GetxController with Helpers {
       sessionModel = await _studentApiController.getMySession(
           pageSize: pageSize, pageIndex: pageIndex);
       //count the session that have home to use in list view as a item count.
-      while (index <= sessionModel.length) {
-        index++;
+      while (index < sessionModel.length) {
+
         if (sessionModel[index].lessonTask!.isNotEmpty) {
           // homeWorkCount++;
           homeWorkSessions.add(sessionModel[index]);
@@ -42,6 +42,7 @@ class StudentHomeGetXController extends GetxController with Helpers {
         if (sessionModel[index].lessonTest!.isNotEmpty) {
           testSessions.add(sessionModel[index]);
         }
+        index++;
       }
       print("student - homeWork count : ${homeWorkSessions.length}");
       update();

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:marsous1/models/submit_test_grade_model.dart';
 
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 import '../../../app/utils/helpers.dart';
-import '../../../models/session_model.dart';
-import '../../../models/submit_grade_model.dart';
+import '../../../data/api/controllers/teacher_api_controller.dart';
+import '../../../models/old_upcoming_task_test_model.dart';
+import '../../../models/test_student_model.dart';
 import '../../../resources/assets_manager.dart';
 import '../../../resources/color_manager.dart';
 import '../../../resources/font_manager.dart';
@@ -18,11 +20,28 @@ class TestGetxController extends GetxController {
   String? birthDate;
   bool isSelected = false;
   bool isSelected1 = false;
-  SubmitGradeModel submitGrade = SubmitGradeModel();
-  List<SubmitGradeModel> submitGradeList = [];
+  bool isLoading = true;
+  SubmitTestGradeModel submitTestGrade = SubmitTestGradeModel();
+  List<SubmitTestGradeModel> submitGradeList = [];
+  OldUpcomingTaskTestModel? testList;
 
   late final TextEditingController selectDateTextEditingController =
       TextEditingController();
+
+  final TeacherApiController _teacherApiController = TeacherApiController();
+
+  void getTestList({int? pageIndex = 1, int? pageSize = 20}) async {
+    isLoading = true;
+    try {
+      testList = await _teacherApiController.getTestList(
+          pageSize: pageSize, pageIndex: pageIndex);
+      isLoading = false;
+      update();
+    } catch (e) {
+      print("teacher - get task list error : $e");
+      isLoading = false;
+    }
+  }
 
   // select date.
   void selectDateFrom({
@@ -215,7 +234,8 @@ class TestGetxController extends GetxController {
                                     borderRadius: BorderRadius.circular(25.r)),
                               ),
                               onPressed: () {},
-                              child: const Text("عرض النتائج",style: TextStyle(color: Colors.white))),
+                              child: const Text("عرض النتائج",
+                                  style: TextStyle(color: Colors.white))),
                         ),
                       ),
                     ],
@@ -230,7 +250,7 @@ class TestGetxController extends GetxController {
   Future showSheetAddTestDetails(
           BuildContext context,
           SubmitGradeGetXController submitGradeGetXController,
-          SessionModel sessionModel) =>
+          TestStudentModel testStudentModel) =>
       showSlidingBottomSheet(
         context,
         builder: (context) => SlidingSheetDialog(
@@ -331,17 +351,20 @@ class TestGetxController extends GetxController {
                               ),
                               onPressed: () {
                                 submitGradeList = [];
-                                submitGrade.testGrade = mark;
-                                submitGrade.sessionId = sessionModel.id;
-                                submitGrade.taskGrade = sessionModel.taskGrade;
-                                submitGradeList.add(submitGrade);
-                                sessionModel.testGrade = mark;
-                                sessionModel.update();
-                                submitGradeGetXController.submitGrade(
+                                submitTestGrade.testGrade = mark;
+                                submitTestGrade.sessionId = testStudentModel.id;
+                                // submitTestGrade.sessionId = "0b171825-1811-4c60-41ac-08dc5bc02e9e";
+                                // submitGrade.taskGrade = taskTestModel.taskGrade;
+                                submitGradeList.add(submitTestGrade);
+                                submitTestGrade.testGrade = mark;
+                                testStudentModel.updateGrade(gradeUpdated: mark);
+                                testStudentModel.update();
+                                submitGradeGetXController.submitGradeTest(
                                     context: context,
                                     submitGradeList: submitGradeList);
                               },
-                              child: const Text("تأكيد",style: TextStyle(color: Colors.white))),
+                              child: const Text("تأكيد",
+                                  style: TextStyle(color: Colors.white))),
                         ),
                       ),
                     ],

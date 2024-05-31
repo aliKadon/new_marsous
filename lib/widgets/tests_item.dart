@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:marsous1/models/task_test_model.dart';
 
-import '../models/session_model.dart';
 import '../resources/assets_manager.dart';
 import '../resources/font_manager.dart';
 
 class TestsItem extends StatefulWidget {
-  final SessionModel? sessionModel;
+  final TaskTestModel? taskTestModel;
+  final int isSelected;
 
-  const TestsItem({super.key, this.sessionModel});
+  const TestsItem({super.key, this.taskTestModel, required this.isSelected});
 
   @override
   State<TestsItem> createState() => _TestsItemState();
@@ -24,7 +25,7 @@ class _TestsItemState extends State<TestsItem> {
           padding: EdgeInsets.all(15.w),
           child: Row(
             children: [
-              widget.sessionModel!.testGrade != -1
+              widget.isSelected == 1
                   ? Container(
                       padding: EdgeInsets.all(5.w),
                       decoration: BoxDecoration(
@@ -51,7 +52,8 @@ class _TestsItemState extends State<TestsItem> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(widget.sessionModel!.date!)),
+                    DateFormat('yMMMMEEEEd', 'ar')
+                        .format(DateTime.parse(widget.taskTestModel!.date!)),
                     style: const TextStyle(color: Colors.black),
                   ),
                   SizedBox(
@@ -59,7 +61,7 @@ class _TestsItemState extends State<TestsItem> {
                     child: Row(
                       children: [
                         Text(
-                          "${widget.sessionModel?.lessonTest}",
+                          "${widget.taskTestModel?.question}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.black,

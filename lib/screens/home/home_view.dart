@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../app/utils/app_shared_data.dart';
+import '../../models/course_model.dart';
 import '../../resources/assets_manager.dart';
 import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
@@ -13,6 +14,7 @@ import '../../widgets/lesson_home_item.dart';
 import '../../widgets/shimmer_loading/shimmer_loding_course_item.dart';
 import '../../widgets/slider/slider_banner.dart';
 import '../contact_us/contact_us_view.dart';
+import '../login/controller/profile_getx_controller.dart';
 import '../marsous_getx_controller/marsous_getx_controller.dart';
 import 'controller/home_getx_controller.dart';
 
@@ -37,12 +39,9 @@ class _HomeViewState extends State<HomeView> {
 
   //check if it is the bottom of grid
   void scrollListener() {
-    print('you in listner');
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
-      print("reached the bottom");
-      print('page1 : ${page + 1}');
       page = page + 1;
       rows = rows + 5;
       // do something when you reach the bottom of the grid
@@ -89,69 +88,75 @@ class _HomeViewState extends State<HomeView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          // width: MediaQuery.of(context).size.width * 0.5,
-                          padding: EdgeInsets.only(
-                              top: 50.h, right: 20.w, left: 20.w),
-                          child: AppSharedData.userInfoModel == null
-                              ? Image.asset(
-                                  ImageAssets.accountProfileImage,
-                                  height: 60.h,
-                                  width: 60.h,
-                                )
-                              : ClipRRect(
-                                  borderRadius: BorderRadius.circular(35.r),
-                                  child: Image.network(
-                                    AppSharedData.userInfoModel!.image!,
-                                    // "http://marsous-001-site2.anytempurl.com/pImages/",
+                GetBuilder<ProfileGetXController>(
+                  builder: (controller) => Row(
+                    children: [
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            // width: MediaQuery.of(context).size.width * 0.5,
+                            padding: EdgeInsets.only(
+                                top: 50.h, right: 20.w, left: 20.w),
+                            child: AppSharedData.userInfoModel == null
+                                ? Image.asset(
+                                    ImageAssets.accountProfileImage,
                                     height: 60.h,
                                     width: 60.h,
-                                    fit: BoxFit.fill,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        ImageAssets.accountProfileImage,
-                                        height: 60.h,
-                                        width: 60.h,
-                                      );
-                                    },
+                                  )
+                                : ClipRRect(
+                                    borderRadius: BorderRadius.circular(35.r),
+                                    child: Image.network(
+                                      AppSharedData.userInfoModel!.image!,
+                                      // "http://marsous-001-site2.anytempurl.com/pImages/",
+                                      height: 60.h,
+                                      width: 60.h,
+                                      fit: BoxFit.fill,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Image.asset(
+                                          ImageAssets.accountProfileImage,
+                                          height: 60.h,
+                                          width: 60.h,
+                                        );
+                                      },
+                                    ),
                                   ),
-                                ),
-                        )),
-                    Padding(
-                      padding: EdgeInsets.only(top: 50.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "مرحبا بك",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.black, fontSize: FontSize.s14),
-                          ),
-                          Text(
-                            "${AppSharedData.userInfoModel?.fullName}",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: FontSize.s16,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ],
+                          )),
+                      Padding(
+                        padding: EdgeInsets.only(top: 50.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "مرحبا بك",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: FontSize.s14),
+                            ),
+                            SizedBox(
+                              width: 230.w,
+                              child: Text(
+                                "${AppSharedData.userInfoModel?.fullName}",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: FontSize.s14,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () {
-                        _scaffoldKey.currentState!.openEndDrawer();
-                      },
-                      icon: const Icon(Icons.view_headline_sharp),
-                    ),
-                  ],
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          _scaffoldKey.currentState!.openEndDrawer();
+                        },
+                        icon: const Icon(Icons.view_headline_sharp),
+                      ),
+                    ],
+                  ),
                 ),
                 Stack(
                   children: [
@@ -211,7 +216,8 @@ class _HomeViewState extends State<HomeView> {
                                   ),
                                 );
                               },
-                              child: const Text("تواصل معنا",style: TextStyle(color: Colors.white)))
+                              child: const Text("تواصل معنا",
+                                  style: TextStyle(color: Colors.white)))
                         ],
                       ),
                     )
@@ -231,34 +237,37 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           GetBuilder<HomeGetXController>(
-            id: 'teacherCourses',
-            builder: (controller) => controller.isLoading == true
-                ? Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: 3,
-                      itemBuilder: (context, index) => getShimmerLoading(),
-                    ),
-                  )
-                : controller.courses.isEmpty
-                    ? const Center(
-                        child: Text("لم يتم الاشتراك بأي حلقة بعد!"),
-                      )
-                    : Expanded(
+              id: 'teacherCourses',
+              builder: (controller) {
+                return controller.isLoading == true
+                    ? Expanded(
                         child: ListView.builder(
-                          controller: _scrollController,
                           shrinkWrap: true,
                           physics: const BouncingScrollPhysics(),
-                          itemCount: controller.courses.length,
-                          itemBuilder: (context, index) {
-                            return LessoneHomeItem(
-                              courseModel: controller.courses[index],
-                            );
-                          },
+                          itemCount: 3,
+                          itemBuilder: (context, index) => getShimmerLoading(),
                         ),
-                      ),
-          )
+                      )
+                    : controller.courses.isEmpty
+                        ? const Center(
+                            child: Text("لم يتم الاشتراك بأي حلقة بعد!"),
+                          )
+                        : Expanded(
+                            child: ListView.builder(
+                              controller: _scrollController,
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: controller.courses.length,
+                              itemBuilder: (context, index) {
+                                Get.put<CourseModel>(controller.courses[index],
+                                    tag: "${controller.courses[index].id}");
+                                return LessoneHomeItem(
+                                  tag: "${controller.courses[index].id}",
+                                );
+                              },
+                            ),
+                          );
+              })
         ],
       ),
     );

@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-
 import '../../../../models/session_model.dart';
 import '../../../../resources/color_manager.dart';
 import '../../../../resources/font_manager.dart';
@@ -271,81 +270,89 @@ class _ConstantLessonDetailsStudentViewState
                   //           ),
                   //         ),
                   //       ),
-                  isSelected == 0 &&
-                          controller.previousLessons!.upcomming == null
-                      ? Expanded(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text("لا يوجد حلقات قادمة",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: FontSize.s16,
-                                    color: Colors.black)),
-                          ),
-                        )
-                      : isSelected == 1 &&
-                              controller.previousLessons!.old!.isEmpty
+                  controller.isLoading
+                      ? const Expanded(
+                          child: Center(
+                          child: CircularProgressIndicator(),
+                        ))
+                      : isSelected == 0 &&
+                              controller.previousLessons!.upcomming!.isEmpty
                           ? Expanded(
                               child: Align(
                                 alignment: Alignment.center,
-                                child: Text("لا يوجد حلقات سابقة",
+                                child: Text("لا يوجد حلقات قادمة",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         fontSize: FontSize.s16,
                                         color: Colors.black)),
                               ),
                             )
-                          : Expanded(
-                              child: ListView.builder(
-                              controller: _scrollController,
-                              physics: const BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: isSelected == 1
-                                  ? controller.previousLessons!.old!.length
-                                  : 1,
-                              itemBuilder: (context, index) {
-                                Get.put<SessionModel>(
-                                    isSelected == 1
-                                        ? controller
-                                            .previousLessons!.old![index]
-                                        : controller
-                                            .previousLessons!.upcomming!,
-                                    tag:
-                                        "${isSelected == 1 ? controller.previousLessons!.old![index].id : controller.previousLessons!.upcomming?.id}");
-                                return GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => isSelected == 1
-                                              ? PreviousLessonDetailsStudentView(
-                                                  episodeTitle:
-                                                      "تقييم جلسة ${DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(controller.previousLessons!.old![index].date!))} ",
-                                                  sessionModel: controller
-                                                      .previousLessons!
-                                                      .old![index])
-                                              : NextLessonDetailsStudent(
-                                                  sessionModel: controller
-                                                      .previousLessons!
-                                                      .upcomming!,
-                                                  title:
-                                                      " جلسة ${DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(controller.previousLessons!.upcomming!.date!))} ",
-                                                ),
-                                        ),
-                                      );
-                                    },
-                                    child: isSelected == 1
-                                        ? StudentPreviousLessonItem(
-                                            sessionModel: controller
-                                                .previousLessons!.old![index],
-                                            tag:
-                                                "${controller.previousLessons!.old![index].id}",
-                                          )
-                                        : StudentNextLessonConstantItem(
-                                            sessionModel: controller
-                                                .previousLessons!.upcomming!,
-                                          ));
-                              },
-                            ))
+                          : isSelected == 1 &&
+                                  controller.previousLessons!.old!.isEmpty
+                              ? Expanded(
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text("لا يوجد حلقات سابقة",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: FontSize.s16,
+                                            color: Colors.black)),
+                                  ),
+                                )
+                              : Expanded(
+                                  child: ListView.builder(
+                                  controller: _scrollController,
+                                  physics: const BouncingScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: isSelected == 1
+                                      ? controller.previousLessons!.old!.length
+                                      : controller
+                                          .previousLessons!.upcomming!.length,
+                                  itemBuilder: (context, index) {
+                                    Get.put<SessionModel>(
+                                        isSelected == 1
+                                            ? controller
+                                                .previousLessons!.old![index]
+                                            : controller.previousLessons!
+                                                .upcomming![index],
+                                        tag:
+                                            "${isSelected == 1 ? controller.previousLessons!.old![index].id : controller.previousLessons!.upcomming?[index].id}");
+                                    return GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => isSelected ==
+                                                      1
+                                                  ? PreviousLessonDetailsStudentView(
+                                                      tag:
+                                                          "${isSelected == 1 ? controller.previousLessons!.old![index].id : controller.previousLessons!.upcomming?[index].id}",
+                                                      episodeTitle:
+                                                          "تقييم جلسة ${DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(controller.previousLessons!.old![index].date!))} ",
+                                                    )
+                                                  : NextLessonDetailsStudent(
+                                                      tag:
+                                                          "${isSelected == 1 ? controller.previousLessons!.old![index].id : controller.previousLessons!.upcomming?[index].id}",
+                                                      title:
+                                                          " جلسة ${DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(controller.previousLessons!.upcomming![index].date!))} ",
+                                                    ),
+                                            ),
+                                          );
+                                        },
+                                        child: isSelected == 1
+                                            ? StudentPreviousLessonItem(
+                                                sessionModel: controller
+                                                    .previousLessons!
+                                                    .old![index],
+                                                tag:
+                                                    "${controller.previousLessons!.old![index].id}",
+                                              )
+                                            : StudentNextLessonConstantItem(
+                                                sessionModel: controller
+                                                    .previousLessons!
+                                                    .upcomming![index],
+                                              ));
+                                  },
+                                ))
                 ],
               ),
       );

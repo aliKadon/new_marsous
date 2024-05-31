@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 import '../../models/session_model.dart';
 import '../../resources/color_manager.dart';
@@ -32,7 +33,7 @@ class StudentNextLessonConstantItem extends StatelessWidget {
                     width: 5.w,
                   ),
                   Text(
-                    "الخميس | 17 مارس 2023",
+                    DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(sessionModel.date!)),
                     style:
                         TextStyle(color: Colors.black, fontSize: FontSize.s14),
                   ),

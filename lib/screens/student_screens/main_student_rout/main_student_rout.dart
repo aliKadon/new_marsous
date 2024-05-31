@@ -304,16 +304,16 @@ class _MainStudentRoutState extends State<MainStudentRout> {
       return true;
     }
 
-    _doubleBackToExitPressedOnce = true;
-    Get.snackbar(
-      'تنبيه',
-      'اضغط زر الرجوع مرة أخرى للخروج من التطبيق',
-      backgroundColor: ColorManager.grey,
-      borderRadius: 25.r,
-    );
-    Timer(const Duration(seconds: 2), () {
-      _doubleBackToExitPressedOnce = false;
-    });
+    // _doubleBackToExitPressedOnce = true;
+    // Get.snackbar(
+    //   'تنبيه',
+    //   'اضغط زر الرجوع مرة أخرى للخروج من التطبيق',
+    //   backgroundColor: ColorManager.grey,
+    //   borderRadius: 25.r,
+    // );
+    // Timer(const Duration(seconds: 2), () {
+    //   _doubleBackToExitPressedOnce = false;
+    // });
     return false;
   }
 }

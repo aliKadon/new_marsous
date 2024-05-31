@@ -104,7 +104,8 @@ class ContactUsGetxController extends GetxController with Helpers {
                             onChanged: (value) {
                               setState(() {
                                 isSelected = !isSelected;
-                                submitMessageModel.isToMarsous = isSelected;
+                                isSelected1 = !isSelected;
+                                submitMessageModel.isToMarsous = false;
                               });
                             },
                           )
@@ -124,6 +125,8 @@ class ContactUsGetxController extends GetxController with Helpers {
                             onChanged: (value) {
                               setState(() {
                                 isSelected1 = !isSelected1;
+                                isSelected = !isSelected1;
+                                submitMessageModel.isToMarsous = true;
                               });
                             },
                           )
@@ -152,7 +155,6 @@ class ContactUsGetxController extends GetxController with Helpers {
                                     borderRadius: BorderRadius.circular(25.r)),
                               ),
                               onPressed: () {
-                                print(submitMessageModel.toJson().toString());
                                 submitMessage(
                                     context: context,
                                     submitMessageModel: submitMessageModel);

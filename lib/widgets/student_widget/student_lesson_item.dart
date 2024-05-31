@@ -19,7 +19,7 @@ class StudentLessonItem extends StatelessWidget {
       child: Column(
         children: [
           Image.asset(
-            ImageAssets.studentImage,
+            ImageAssets.accountProfileImage,
             height: 100.h,
           ),
           SizedBox(

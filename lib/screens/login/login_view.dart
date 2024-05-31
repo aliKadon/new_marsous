@@ -162,7 +162,7 @@ class _LoginViewState extends State<LoginView> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => const ForgetPasswordView(),
+                                builder: (context) => ForgetPasswordView(),
                               ),
                             );
                           },

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app/utils/app_shared_data.dart';
@@ -33,6 +32,11 @@ enum PrefKeys {
   attendanceCount,
   absenceCount,
   centerId,
+  firstName,
+  middleName,
+  lastName,
+  androidUrl,
+  iosUrl,
 }
 
 class SharedPrefController {
@@ -53,6 +57,12 @@ class SharedPrefController {
   Future<void> saveUserInfo({required UserInfoModel userInfoModel}) async {
     await _sharedPreferences.setString(
         PrefKeys.userName.name, userInfoModel.userName!);
+    await _sharedPreferences.setString(
+        PrefKeys.firstName.name, userInfoModel.firstName!);
+    await _sharedPreferences.setString(
+        PrefKeys.middleName.name, userInfoModel.middleName!);
+    await _sharedPreferences.setString(
+        PrefKeys.lastName.name, userInfoModel.lastName!);
     await _sharedPreferences.setString(
         PrefKeys.fullName.name, userInfoModel.fullName!);
     await _sharedPreferences.setString(
@@ -87,6 +97,9 @@ class SharedPrefController {
     return _sharedPreferences.getString(PrefKeys.token.name) == null
         ? null
         : AppSharedData.userInfoModel = UserInfoModel(
+            middleName: _sharedPreferences.getString(PrefKeys.middleName.name),
+            lastName: _sharedPreferences.getString(PrefKeys.lastName.name),
+            firstName: _sharedPreferences.getString(PrefKeys.firstName.name),
             userName: _sharedPreferences.getString(PrefKeys.userName.name),
             image: _sharedPreferences.getString(PrefKeys.image.name),
             email: _sharedPreferences.getString(PrefKeys.email.name),
@@ -214,6 +227,20 @@ class SharedPrefController {
     await _sharedPreferences.setString(
         PrefKeys.tokenChild.name, 'Bearer $token');
   }
+  String get androidUrl =>
+      _sharedPreferences.getString(PrefKeys.androidUrl.name) ?? '';
+
+  Future<void> setAndroidUrl(String androidUrl) async {
+    await _sharedPreferences.setString(
+        PrefKeys.androidUrl.name, androidUrl);
+  }
+  String get iosUrl =>
+      _sharedPreferences.getString(PrefKeys.iosUrl.name) ?? '';
+
+  Future<void> setIosUrl(String iosUrl) async {
+    await _sharedPreferences.setString(
+        PrefKeys.iosUrl.name, iosUrl);
+  }
 
   String get primaryToken =>
       _sharedPreferences.getString(PrefKeys.primaryToken.name) ?? '';
@@ -223,7 +250,8 @@ class SharedPrefController {
         PrefKeys.primaryToken.name, 'Bearer $token');
   }
 
-  String get centerId => _sharedPreferences.getString(PrefKeys.centerId.name) ?? '';
+  String get centerId =>
+      _sharedPreferences.getString(PrefKeys.centerId.name) ?? '';
 
   Future<void> setCenterId(String centerId) async {
     await _sharedPreferences.setString(PrefKeys.centerId.name, centerId);
@@ -255,6 +283,9 @@ class SharedPrefController {
     _sharedPreferences.remove(PrefKeys.role.name);
     _sharedPreferences.remove(PrefKeys.phoneNumber.name);
     _sharedPreferences.remove(PrefKeys.email.name);
+    _sharedPreferences.remove(PrefKeys.firstName.name);
+    _sharedPreferences.remove(PrefKeys.lastName.name);
+    _sharedPreferences.remove(PrefKeys.middleName.name);
     _sharedPreferences.remove(PrefKeys.userName.name);
     _sharedPreferences.remove(PrefKeys.fullName.name);
     _sharedPreferences.remove(PrefKeys.image.name);

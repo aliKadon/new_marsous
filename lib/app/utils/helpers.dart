@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:marsous1/resources/color_manager.dart';
 
 import '../../widgets/dialogs/loading_dialog_widget.dart';
 
@@ -38,5 +41,13 @@ mixin Helpers {
       ),
       barrierDismissible: false,
     );
+  }
+
+  Widget showLoadingDialogNew() {
+    return LoadingAnimationWidget.discreteCircle(
+        color: Colors.white,
+        size: 50.h,
+        secondRingColor: ColorManager.primary,
+        thirdRingColor: ColorManager.secondary);
   }
 }

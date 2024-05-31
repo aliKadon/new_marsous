@@ -21,8 +21,7 @@ class MarsousSubmitMessageApiController with ApiHelper {
       ),
     );
 
-    print("marsous - submit message response status code : ${response.statusCode}");
-    print("marsous - submit message response body : ${response.body}");
+
 
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);

@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-
 import '../../../../models/session_model.dart';
 import '../../../../resources/color_manager.dart';
 import '../../../../resources/font_manager.dart';
@@ -203,7 +202,7 @@ class _FlexLessonDetailsStudentViewState
                   //   ),
                   // ),
                   isSelected == 0 &&
-                          controller.previousLessons!.upcomming == null
+                          controller.previousLessons!.upcomming!.isEmpty
                       ? Expanded(
                           child: Align(
                             alignment: Alignment.center,
@@ -240,26 +239,24 @@ class _FlexLessonDetailsStudentViewState
                                         ? controller
                                             .previousLessons!.old![index]
                                         : controller
-                                            .previousLessons!.upcomming!,
+                                            .previousLessons!.upcomming![index],
                                     tag:
-                                        "${isSelected == 1 ? controller.previousLessons!.old![index].id : controller.previousLessons!.upcomming?.id}");
+                                        "${isSelected == 1 ? controller.previousLessons!.old![index].id : controller.previousLessons!.upcomming?[index].id}");
                                 return GestureDetector(
                                     onTap: () {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) => isSelected == 1
                                               ? PreviousLessonDetailsStudentView(
-                                                  sessionModel: controller
-                                                      .previousLessons!
-                                                      .old![index],
+                                                  tag:
+                                                      "${isSelected == 1 ? controller.previousLessons!.old![index].id : controller.previousLessons!.upcomming?[index].id}",
                                                   episodeTitle:
                                                       "تقييم جلسة ${DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(controller.previousLessons!.old![index].date!))} ")
                                               : NextLessonDetailsStudent(
-                                                  sessionModel: controller
-                                                      .previousLessons!
-                                                      .upcomming!,
+                                                  tag:
+                                                      "${isSelected == 1 ? controller.previousLessons!.old![index].id : controller.previousLessons!.upcomming?[index].id}",
                                                   title:
-                                                      " جلسة ${DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(controller.previousLessons!.upcomming!.date!))} ",
+                                                      " جلسة ${DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(controller.previousLessons!.upcomming![index].date!))} ",
                                                 ),
                                         ),
                                       );
@@ -273,7 +270,7 @@ class _FlexLessonDetailsStudentViewState
                                           )
                                         : StudentNextLessonFlexItem(
                                             sessionModel: controller
-                                                .previousLessons!.upcomming!,
+                                                .previousLessons!.upcomming![index],
                                           ));
                               },
                             ))

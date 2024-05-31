@@ -9,7 +9,8 @@ import '../../../../resources/font_manager.dart';
 class StudentTestDetailsView extends StatefulWidget {
   final SessionModel sessionModel;
 
-  const StudentTestDetailsView({super.key, required this.sessionModel});
+  const StudentTestDetailsView(
+      {super.key, required this.sessionModel});
 
   @override
   State<StudentTestDetailsView> createState() => _StudentTestDetailsViewState();

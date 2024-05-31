@@ -2,20 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:marsous1/models/test_student_model.dart';
+import 'package:marsous1/screens/tests/test_details/controller/test_details_getx_controller.dart';
 
 import 'package:shimmer/shimmer.dart';
 
-import '../../../models/session_model.dart';
+import '../../../models/task_test_model.dart';
 import '../../../resources/assets_manager.dart';
 import '../../../resources/font_manager.dart';
 import '../../../widgets/shimmer_loading/shimmer_loading_task_test_item.dart';
 import '../../../widgets/test_Details_item.dart';
-import '../../home/student_session_getx_controller/student_session_getx_controller.dart';
 
 class TestDetailsView extends StatefulWidget {
-  final SessionModel sessionModel;
+  final int isSelected;
+  final TaskTestModel taskModel;
 
-  const TestDetailsView({super.key, required this.sessionModel});
+  const TestDetailsView(
+      {super.key, required this.isSelected, required this.taskModel});
 
   @override
   State<TestDetailsView> createState() => _TestDetailsViewState();
@@ -23,28 +26,26 @@ class TestDetailsView extends StatefulWidget {
 
 class _TestDetailsViewState extends State<TestDetailsView> {
   //CONTROLLER
-  final StudentSessionGetXController _studentSessionGetXController =
-      Get.put(StudentSessionGetXController());
+  final TestDetailsGetxController _testDetailsGetxController =
+      Get.put(TestDetailsGetxController());
 
   @override
   void initState() {
-    _studentSessionGetXController.getStudentSession(
-        sessionId: widget.sessionModel.id!);
+    _testDetailsGetxController.getTestStudentList(
+        courseId: widget.taskModel.id!, pageIndex: 1, pageSize: 20);
     super.initState();
   }
-
-  List<bool> list = [true, false, false, false, false, false];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(widget.sessionModel.date!))),
+        title: Text(DateFormat('yMMMMEEEEd', 'ar')
+            .format(DateTime.parse(widget.taskModel.date ?? "2024-04-18T15:15:00"))),
       ),
       body: WillPopScope(
         onWillPop: () async {
-          _studentSessionGetXController.isLoading = true;
+          _testDetailsGetxController.isLoading = true;
           Navigator.of(context).pop();
 
           return false;
@@ -55,41 +56,41 @@ class _TestDetailsViewState extends State<TestDetailsView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15.r))),
-                child: Padding(
-                  padding: EdgeInsets.all(8.w),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(5.w),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF9F1E9),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10.r),
-                          ),
-                        ),
-                        child:
-                            Image.asset(IconsAssets.searchIcon, height: 23.h),
-                      ),
-                      SizedBox(
-                        width: 300.w,
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            hintText: "بحث بإسم الطالب / كود الطالب",
-                            hintStyle: TextStyle(
-                                color: Colors.grey, fontSize: FontSize.s14),
-                            focusedBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // Card(
+              //   shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.all(Radius.circular(15.r))),
+              //   child: Padding(
+              //     padding: EdgeInsets.all(8.w),
+              //     child: Row(
+              //       children: [
+              //         Container(
+              //           padding: EdgeInsets.all(5.w),
+              //           decoration: BoxDecoration(
+              //             color: const Color(0xFFF9F1E9),
+              //             borderRadius: BorderRadius.all(
+              //               Radius.circular(10.r),
+              //             ),
+              //           ),
+              //           child:
+              //               Image.asset(IconsAssets.searchIcon, height: 23.h),
+              //         ),
+              //         SizedBox(
+              //           width: 300.w,
+              //           child: TextFormField(
+              //             decoration: InputDecoration(
+              //               hintText: "بحث بإسم الطالب / كود الطالب",
+              //               hintStyle: TextStyle(
+              //                   color: Colors.grey, fontSize: FontSize.s14),
+              //               focusedBorder: InputBorder.none,
+              //               disabledBorder: InputBorder.none,
+              //               enabledBorder: InputBorder.none,
+              //             ),
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
               SizedBox(
                 height: 15.h,
               ),
@@ -113,7 +114,7 @@ class _TestDetailsViewState extends State<TestDetailsView> {
                     SizedBox(
                       width: 300.w,
                       child: Text(
-                        "${widget.sessionModel.lessonTest}",
+                        "${widget.taskModel.question}",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: FontSize.s13,
@@ -135,7 +136,7 @@ class _TestDetailsViewState extends State<TestDetailsView> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              GetBuilder<StudentSessionGetXController>(
+              GetBuilder<TestDetailsGetxController>(
                 builder: (controller) => controller.isLoading == true
                     ? Expanded(
                         child: ListView.builder(
@@ -149,14 +150,19 @@ class _TestDetailsViewState extends State<TestDetailsView> {
                         child: ListView.builder(
                           physics: const BouncingScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: controller.studentSession.length,
+                          itemCount: controller.testStudentList.length,
                           itemBuilder: (context, index) {
-                            Get.put<SessionModel>(
-                                controller.studentSession[index],
-                                tag: "${controller.studentSession[index].id}");
-                            return TestDetailsItem(
-                              sessionModel: controller.studentSession[index],
-                              tag: "${controller.studentSession[index].id}",
+                            Get.put<TestStudentModel>(
+                                controller.testStudentList[index],
+                                tag: "${controller.testStudentList[index].id}");
+                            return
+                              // Text("${controller.testStudentList[index].grade}");
+                              TestDetailsItem(
+                              taskModel: widget.taskModel,
+                              isSelected: widget.isSelected,
+                              tag: "${controller.testStudentList[index].id}",
+                              testStudentModel:
+                                  controller.testStudentList[index],
                             );
                           },
                         ),

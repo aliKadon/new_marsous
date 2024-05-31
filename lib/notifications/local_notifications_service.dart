@@ -38,6 +38,7 @@ class LocalNotificationsService {
     await _flutterLocalNotificationsPlugin?.initialize(
       initializationSettings,
       // onSelectNotification: onNotificationTapped,
+
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:marsous1/screens/login/controller/profile_getx_controller.dart';
 
 import 'package:shimmer/shimmer.dart';
 
@@ -89,69 +90,74 @@ class _StudentHomeViewState extends State<StudentHomeView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        // width: MediaQuery.of(context).size.width * 0.5,
-                        padding:
-                            EdgeInsets.only(top: 50.h, right: 20.w, left: 20.w),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(35.r),
-                          child: AppSharedData.userInfoModel == null
-                              ? Image.asset(
-                                  ImageAssets.accountProfileImage,
-                                  height: 60.h,
-                                  width: 60.h,
-                                )
-                              : Image.network(
-                                  AppSharedData.userInfoModel!.image!,
-                                  height: 60.h,
-                                  width: 60.h,
-                                  fit: BoxFit.fill,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      ImageAssets.accountProfileImage,
-                                      height: 60.h,
-                                      width: 60.h,
-                                    );
-                                  },
-                                ),
+                GetBuilder<ProfileGetXController>(
+                  builder:(controller) => Row(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          // width: MediaQuery.of(context).size.width * 0.5,
+                          padding:
+                              EdgeInsets.only(top: 50.h, right: 20.w, left: 20.w),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(35.r),
+                            child: AppSharedData.userInfoModel == null
+                                ? Image.asset(
+                                    ImageAssets.accountProfileImage,
+                                    height: 60.h,
+                                    width: 60.h,
+                                  )
+                                : Image.network(
+                                    AppSharedData.userInfoModel!.image!,
+                                    height: 60.h,
+                                    width: 60.h,
+                                    fit: BoxFit.fill,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        ImageAssets.accountProfileImage,
+                                        height: 60.h,
+                                        width: 60.h,
+                                      );
+                                    },
+                                  ),
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 50.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "مرحبا بك",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.black, fontSize: FontSize.s14),
-                          ),
-                          Text(
-                            "${AppSharedData.userInfoModel?.fullName}",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: FontSize.s16,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ],
+                      Padding(
+                        padding: EdgeInsets.only(top: 50.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "مرحبا بك",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: FontSize.s14),
+                            ),
+                            SizedBox(
+                              width: 230.w,
+                              child: Text(
+                                "${AppSharedData.userInfoModel?.fullName}",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: FontSize.s14,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () {
-                        _scaffoldKey.currentState!.openEndDrawer();
-                      },
-                      icon: const Icon(Icons.view_headline_sharp),
-                    ),
-                  ],
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          _scaffoldKey.currentState!.openEndDrawer();
+                        },
+                        icon: const Icon(Icons.view_headline_sharp),
+                      ),
+                    ],
+                  ),
                 ),
                 Stack(
                   children: [

@@ -54,7 +54,7 @@ class _NotificationItemState extends State<NotificationItem> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "منصة مرصوص",
+                        "${controller.centerName}",
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w700,
@@ -74,7 +74,7 @@ class _NotificationItemState extends State<NotificationItem> {
                   ),
                   const Spacer(),
                   Text(
-                    DateFormat("h:mma")
+                    DateFormat("h:mma","ar")
                         .format(DateTime.parse(controller.createdDate!)),
                     style: const TextStyle(color: Colors.grey),
                   )

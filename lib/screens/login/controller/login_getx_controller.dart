@@ -38,13 +38,11 @@ class LoginGetxController extends GetxController with Helpers {
 
         //check the role of user
         if (AppSharedData.userInfoModel?.role == "Student") {
-          print("user info login: ${AppSharedData.userInfoModel?.isParent}");
-
           //if the user is parent
           if (AppSharedData.userInfoModel?.isParent == true) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => const ChooseAccountView(),
+                builder: (context) => ChooseAccountView(),
               ),
             );
           }else {

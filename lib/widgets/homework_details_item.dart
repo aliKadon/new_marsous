@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
+import 'package:marsous1/models/task_test_model.dart';
+import 'package:marsous1/models/task_student_model.dart';
 
 import '../models/session_model.dart';
 import '../resources/assets_manager.dart';
@@ -12,10 +13,17 @@ import '../screens/homework/homework_details/controller/homework_details_getx_co
 import '../screens/student_page/student_page_view.dart';
 
 class HomeworkDetailsItem extends StatefulWidget {
-  final SessionModel sessionModel;
+  final TaskStudentModel taskStudentModel;
   final String tag;
+  final int isSelected;
+  final TaskTestModel taskModel;
 
-  const HomeworkDetailsItem({super.key, required this.sessionModel, required this.tag});
+  const HomeworkDetailsItem(
+      {super.key,
+      required this.taskStudentModel,
+      required this.taskModel,
+      required this.tag,
+      required this.isSelected});
 
   @override
   State<HomeworkDetailsItem> createState() => _HomeworkDetailsItemState();
@@ -30,7 +38,6 @@ class _HomeworkDetailsItemState extends State<HomeworkDetailsItem> {
     SubmitGradeGetXController(),
   );
 
-
   @override
   void dispose() {
     Get.delete<SessionModel>(tag: widget.tag);
@@ -43,11 +50,13 @@ class _HomeworkDetailsItemState extends State<HomeworkDetailsItem> {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const StudentPageView(),
+            builder: (context) => StudentPageView(
+              studentId: widget.taskStudentModel.studentId!,
+            ),
           ),
         );
       },
-      child: GetBuilder<SessionModel>(
+      child: GetBuilder<TaskStudentModel>(
         tag: widget.tag,
         builder: (controller) => Container(
           padding: EdgeInsets.all(10.w),
@@ -59,7 +68,7 @@ class _HomeworkDetailsItemState extends State<HomeworkDetailsItem> {
           child: Row(
             children: [
               Image.asset(
-                ImageAssets.studentImage,
+                ImageAssets.accountProfileImage,
                 height: 50.h,
               ),
               SizedBox(
@@ -78,7 +87,7 @@ class _HomeworkDetailsItemState extends State<HomeworkDetailsItem> {
                   SizedBox(
                     width: 180.w,
                     child: Text(
-                      "${widget.sessionModel.studentFullName}",
+                      "${controller.fullName}",
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
@@ -88,46 +97,51 @@ class _HomeworkDetailsItemState extends State<HomeworkDetailsItem> {
                 ],
               ),
               const Spacer(),
-              controller.taskGrade == -1
-                    ? ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: const MaterialStatePropertyAll(Colors.white),
-                          shape: MaterialStatePropertyAll(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r),
-                              side: BorderSide(color: ColorManager.primary),
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          _homeworkDetailsGetxController
-                              .showSheetAddHomeworkDetails(
-                                  context,
-                                  widget.sessionModel,
-                                  _submitGradeGetXController);
-                        },
-                        child: Text(
-                          "صحح",
-                          style: TextStyle(color: ColorManager.primary),
-                        ),
-                      )
-                    : Stack(
-                        children: [
-                          Image.asset(
-                            ImageAssets.star,
-                            height: 40.h,
-                          ),
-                          Positioned.fill(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "${controller.taskGrade}",
-                                style: TextStyle(color: ColorManager.primary),
+              widget.taskModel.isAvilableForEvaluating == false
+                  ? Container()
+                  : widget.taskStudentModel.grade == null ||
+                          widget.taskStudentModel.grade == -1
+                      ? ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                const MaterialStatePropertyAll(Colors.white),
+                            shape: MaterialStatePropertyAll(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                                side: BorderSide(color: ColorManager.primary),
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                          onPressed: () {
+                            _homeworkDetailsGetxController
+                                .showSheetAddHomeworkDetails(
+                                    context,
+                                    widget.taskModel,
+                                    _submitGradeGetXController,
+                                    widget.taskStudentModel);
+                          },
+                          child: Text(
+                            "صحح",
+                            style: TextStyle(color: ColorManager.primary),
+                          ),
+                        )
+                      : Stack(
+                          children: [
+                            Image.asset(
+                              ImageAssets.star,
+                              height: 40.h,
+                            ),
+                            Positioned.fill(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "${controller.grade}",
+                                  style: TextStyle(color: ColorManager.primary),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
             ],
           ),
         ),

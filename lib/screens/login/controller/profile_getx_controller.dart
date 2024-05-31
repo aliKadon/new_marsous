@@ -13,14 +13,13 @@ import '../../../data/api/controllers/user_details_api_controller.dart';
 import '../../../models/api_response.dart';
 import '../login_view.dart';
 
-
 class ProfileGetXController extends GetxController with Helpers {
   final UserDetailsApiController _userDetailsApiController =
-  UserDetailsApiController();
+      UserDetailsApiController();
   final UpdateProfileApiController _updateProfileApiController =
-  UpdateProfileApiController();
+      UpdateProfileApiController();
   final ChangePasswordApiController _changePasswordApiController =
-  ChangePasswordApiController();
+      ChangePasswordApiController();
 
   final TextEditingController newPassword = TextEditingController();
   late final GlobalKey<FormState> formKey = GlobalKey();
@@ -30,15 +29,16 @@ class ProfileGetXController extends GetxController with Helpers {
   List<String> listImage = [];
 
   ApiResponse? userInfoModel;
-  String? phoneNumber;
-  String? title;
-  String? firstName;
-  String? middleName;
-  String? lastName;
-  String? birthDate;
-  String? nationality;
-  String? nationalCardId;
+  TextEditingController phoneNumber = TextEditingController();
+  TextEditingController country= TextEditingController();
+  TextEditingController firstName= TextEditingController();
+  TextEditingController middleName= TextEditingController();
+  TextEditingController lastName= TextEditingController();
+  TextEditingController addressDetails= TextEditingController();
+  TextEditingController state= TextEditingController();
+  TextEditingController city= TextEditingController();
   String? oldPassword;
+
   // String? newPassword;
   String? confirmPassword;
 
@@ -57,15 +57,12 @@ class ProfileGetXController extends GetxController with Helpers {
     }
   }
 
-
-
   void changeProfileImage(
       {required BuildContext context, required File file}) async {
     try {
-      print("file : ${file.path}");
       showLoadingDialog(context: context, title: 'Logging...');
-      final ApiResponse apiResponse = await _updateProfileApiController
-          .updateProfileImage(file: file);
+      final ApiResponse apiResponse =
+          await _updateProfileApiController.updateProfileImage(file: file);
       if (apiResponse.status == 200) {
         Navigator.of(context).pop();
         showSnackBar(context, message: apiResponse.message, error: false);
@@ -75,12 +72,10 @@ class ProfileGetXController extends GetxController with Helpers {
       }
     } catch (e) {
       Navigator.of(context).pop();
-      print("======================error");
-      print(e.toString());
+
       showSnackBar(context, message: e.toString(), error: true);
     }
   }
-
 
   Future pickImage({required BuildContext context}) async {
     try {
@@ -92,23 +87,41 @@ class ProfileGetXController extends GetxController with Helpers {
       base64 = base64Encode(byts);
       listImage.add('data:image/jpeg;base64,$base64');
       changeProfileImage(context: context, file: imageTemp);
-          update();
+      ApiResponse userInfo = await _userDetailsApiController.getMyInfo();
+      update();
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
   }
 
   void updateProfile({required BuildContext context}) async {
-    userInfoModel = await _updateProfileApiController.updateProfile(
-      phoneNumber: phoneNumber,
-      title: title,
-      lastName: lastName,
-      firstName: firstName,
-      birthDate: birthDate,
-      middleName: middleName,
-      nationalCardId: nationalCardId,
-      nationality: nationalCardId,
-    );
+    showLoadingDialog(context: context, title: 'Logging...');
+    try{
+      userInfoModel = await _updateProfileApiController.updateProfile(
+        phoneNumber: phoneNumber.text,
+        lastName: lastName.text,
+        firstName: firstName.text,
+        addressDetails: addressDetails.text,
+        middleName: middleName.text,
+        city: "",
+        state: "",
+        country: "",
+      );
+      if (userInfoModel!.status == 200) {
+        getMyInfo(context: context);
+        Navigator.of(context).pop();
+        showSnackBar(context, message: userInfoModel!.message, error: false);
+      }else {
+        Navigator.of(context).pop();
+        showSnackBar(context, message: userInfoModel!.message, error: true);
+      }
+
+      update();
+    }catch (e) {
+      print("update profile _ error : $e");
+      Navigator.of(context).pop();
+      showSnackBar(context, message: userInfoModel!.message, error: true);
+    }
   }
 
   void changePassword({required BuildContext context}) async {
@@ -121,12 +134,11 @@ class ProfileGetXController extends GetxController with Helpers {
       if (userInfoModel!.status == 200) {
         Navigator.of(context).pop();
         showSnackBar(context, message: userInfoModel!.message, error: false);
-
-      }else {
+      } else {
         Navigator.of(context).pop();
         showSnackBar(context, message: userInfoModel!.message, error: true);
       }
-    }catch (e) {
+    } catch (e) {
       Navigator.of(context).pop();
       showSnackBar(context, message: e.toString(), error: true);
     }

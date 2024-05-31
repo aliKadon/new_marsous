@@ -135,7 +135,7 @@ class _LessonHomeStudentHomeState extends State<LessonHomeStudentHome> {
                     ],
                   ),
                   Visibility(
-                      visible: true,
+                      visible: widget.courseModel.typeName == "ثابتة" ? true : false,
                       child: Column(
                         children: [
                           Divider(
@@ -144,17 +144,17 @@ class _LessonHomeStudentHomeState extends State<LessonHomeStudentHome> {
                           ),
                           Row(
                             children: [
-                              Icon(
-                                Icons.date_range_outlined,
-                                color: ColorManager.primary,
-                              ),
-                              SizedBox(width: 5.w),
-                              Text(
-                                "السبت  - الإثنين-  الأربعاء",
-                                style: TextStyle(
-                                    color: ColorManager.primary,
-                                    fontSize: FontSize.s14),
-                              ),
+                              // Icon(
+                              //   Icons.date_range_outlined,
+                              //   color: ColorManager.primary,
+                              // ),
+                              // SizedBox(width: 5.w),
+                              // Text(
+                              //   "السبت  - الإثنين-  الأربعاء",
+                              //   style: TextStyle(
+                              //       color: ColorManager.primary,
+                              //       fontSize: FontSize.s14),
+                              // ),
                               const Spacer(),
                               widget.courseModel.typeName == "ثابتة" ? Icon(
                                 Icons.access_time_outlined,

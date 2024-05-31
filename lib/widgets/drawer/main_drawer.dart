@@ -1,6 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../resources/color_manager.dart';
 import '../../../resources/font_manager.dart';
@@ -113,9 +115,7 @@ class _MainDrawerState extends State<MainDrawer> with Helpers {
                           ),
                         ),
                         Text(
-                          widget.isStudent == false
-                              ? "alaa@gmail.com"
-                              : "25255588",
+                          "${AppSharedData.userInfoModel?.email}",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white, fontSize: FontSize.s12),
@@ -174,7 +174,23 @@ class _MainDrawerState extends State<MainDrawer> with Helpers {
                   },
                   child: drawerItem(
                       image: IconsAssets.sliderIcon6, text: "رؤيتنا")),
-              drawerItem(image: IconsAssets.sliderIcon7, text: "تقيم التطبيق"),
+              GestureDetector(
+                  onTap: () {
+                    if (Platform.isAndroid || Platform.isIOS) {
+                      final appUrl = Platform.isAndroid
+                          ? SharedPrefController().androidUrl
+                          : SharedPrefController().iosUrl;
+                      final url = Uri.parse(
+                        Platform.isAndroid ? appUrl : appUrl,
+                      );
+                      launchUrl(
+                        url,
+                        mode: LaunchMode.externalApplication,
+                      );
+                    }
+                  },
+                  child: drawerItem(
+                      image: IconsAssets.sliderIcon7, text: "تقيم التطبيق")),
               GestureDetector(
                   onTap: () async {
                     showLoadingDialog(context: context, title: "loading");
@@ -184,7 +200,7 @@ class _MainDrawerState extends State<MainDrawer> with Helpers {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) =>
                           SharedPrefController().centerId.isEmpty
-                              ? const ChooseAccountView()
+                              ? ChooseAccountView()
                               : const ChooseCenterView(),
                     ));
                   },

@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:intl/intl.dart';
+import 'package:marsous1/models/test_info_model.dart';
 
 import '../../../resources/assets_manager.dart';
 import '../../../resources/color_manager.dart';
 import '../../../resources/font_manager.dart';
 
 class StudentPageTestDetails extends StatelessWidget {
-  const StudentPageTestDetails({super.key});
+  final TestInfoModel testInfoModel;
+
+  const StudentPageTestDetails({super.key, required this.testInfoModel});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("اختبار الخميس | 16 مارس"),
+        title: Text(DateFormat('yMMMMEEEEd', 'ar').format(
+            DateTime.parse(testInfoModel.date ?? "2024-04-18T15:15:00"))),
       ),
       body: Container(
         height: double.infinity,
@@ -42,14 +46,15 @@ class StudentPageTestDetails extends StatelessWidget {
                       ),
                       Text(
                         "سجل الاختبار",
-                        style:
-                            TextStyle(color: Colors.black, fontSize: FontSize.s16),
+                        style: TextStyle(
+                            color: Colors.black, fontSize: FontSize.s16),
                       ),
                     ],
                   ),
                   Text(
-                    "أكمل مما حفظت من سورة ( البقرة ) من قوله تعالى : أَوَكُلَّمَا عَٰهَدُوا۟ عَهْدًۭا .... إلى قوله تعالى: وَلَمَّا جَآءَهُمْ ...",
-                    style: TextStyle(color: Colors.grey, fontSize: FontSize.s14),
+                    "${testInfoModel.lessonTest}",
+                    style:
+                        TextStyle(color: Colors.grey, fontSize: FontSize.s14),
                   ),
                   SizedBox(height: 7.h),
                   Divider(
@@ -66,23 +71,29 @@ class StudentPageTestDetails extends StatelessWidget {
                             fontSize: FontSize.s14),
                       ),
                       const Spacer(),
-                      Stack(
-                        children: [
-                          Image.asset(
-                            ImageAssets.star,
-                            height: 40.h,
-                          ),
-                          Positioned.fill(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "10",
-                                style: TextStyle(color: ColorManager.primary),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
+                      testInfoModel.testGrade == -1
+                          ? Text(
+                              "لم يتم التقييم بعد",
+                              style: TextStyle(color: ColorManager.primary),
+                            )
+                          : Stack(
+                              children: [
+                                Image.asset(
+                                  ImageAssets.star,
+                                  height: 40.h,
+                                ),
+                                Positioned.fill(
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "${testInfoModel.testGrade}",
+                                      style: TextStyle(
+                                          color: ColorManager.primary),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
                     ],
                   ),
                 ],

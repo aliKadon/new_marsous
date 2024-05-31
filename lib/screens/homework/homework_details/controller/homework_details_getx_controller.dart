@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:marsous1/models/submit_task_grade_model.dart';
+import 'package:marsous1/models/task_test_model.dart';
+import 'package:marsous1/models/task_student_model.dart';
 
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 import '../../../../app/utils/helpers.dart';
-import '../../../../models/session_model.dart';
-import '../../../../models/submit_grade_model.dart';
+import '../../../../data/api/controllers/teacher_api_controller.dart';
 import '../../../../resources/assets_manager.dart';
 import '../../../../resources/color_manager.dart';
 import '../../../../resources/font_manager.dart';
@@ -17,16 +19,36 @@ import '../../../../resources/values_manager.dart';
 import '../../../home/submit_grade_getx_controller/submit_grade_getx_controller.dart';
 
 class HomeworkDetailsGetxController extends GetxController with Helpers {
+  final TeacherApiController _teacherApiController = TeacherApiController();
+
   bool isSelected = false;
+  var isLoading = true;
   int mark = 0;
-  SubmitGradeModel submitGrade = SubmitGradeModel();
-  List<SubmitGradeModel> submitGradeList = [];
+  SubmitGradeTaskModel submitGrade = SubmitGradeTaskModel();
+  List<SubmitGradeTaskModel> submitGradeList = [];
   var _progress = 0.0;
+  List<TaskStudentModel> taskStudentList = [];
+
+  void getTaskStudentList(
+      {int? pageIndex, int? pageSize, required String courseId}) async {
+    isLoading = true;
+    try {
+      taskStudentList = await _teacherApiController.getTaskStudentList(
+          courseId: courseId, pageIndex: pageIndex, pageSize: pageSize);
+      isLoading = false;
+      update();
+    } catch (e) {
+      print("teacher - homework details - get task student list error : $e ");
+      isLoading = false;
+    }
+  }
 
   Future showSheetAddHomeworkDetails(
-          BuildContext context,
-          SessionModel sessionModel,
-          SubmitGradeGetXController submitGradeGetXController) =>
+    BuildContext context,
+    TaskTestModel taskModel,
+    SubmitGradeGetXController submitGradeGetXController,
+    TaskStudentModel taskStudentModel,
+  ) =>
       showSlidingBottomSheet(
         context,
         builder: (context) => SlidingSheetDialog(
@@ -122,25 +144,27 @@ class HomeworkDetailsGetxController extends GetxController with Helpers {
                         ],
                       ),
                       SizedBox(height: 15.h),
-                      sessionModel.taskFilePath!.isEmpty
+                      taskModel.file!.isEmpty
                           ? Container()
                           : GestureDetector(
                               onTap: () {
+                                print(
+                                    "file url task tutor: ${taskModel.file!}");
                                 FileDownloader.downloadFile(
                                   notificationType: NotificationType.all,
-                                  url: sessionModel.taskFilePath!,
-                                  name: "${sessionModel.studentFullName} واجب",
+                                  url: taskModel.file!,
+                                  name: "${taskModel.couseName} واجب",
                                   onDownloadError: (errorMessage) {
                                     Navigator.of(context).pop();
                                     popUpProgressError(
-                                        context: context,);
+                                      context: context,
+                                    );
                                   },
                                   onDownloadCompleted: (path) {
                                     Navigator.of(context).pop();
                                     File file = File(path);
                                     print("path file : $path");
                                     popUpProgressCompleted(context: context);
-
                                   },
                                   onProgress: (fileName, progress) {
                                     // Navigator.of(context).pop();
@@ -206,15 +230,17 @@ class HomeworkDetailsGetxController extends GetxController with Helpers {
                               ),
                               onPressed: () {
                                 submitGradeList = [];
-                                submitGrade.testGrade = sessionModel.testGrade;
-                                submitGrade.sessionId = sessionModel.id;
+                                submitGrade.sessionId = taskStudentModel.id;
                                 submitGrade.taskGrade = mark;
                                 submitGradeList.add(submitGrade);
-                                sessionModel.taskGrade = mark;
-                                sessionModel.update();
-                                submitGradeGetXController.submitGrade(
+                                // taskModel.taskGrade = mark;
+                                taskStudentModel.gradeUpdated(
+                                    gradeUpdated: mark);
+                                taskStudentModel.update();
+                                submitGradeGetXController.submitGradeTask(
                                     context: context,
                                     submitGradeList: submitGradeList);
+
                               },
                               child: const Text("تأكيد")),
                         ),
@@ -268,8 +294,7 @@ class HomeworkDetailsGetxController extends GetxController with Helpers {
     );
   }
 
-  void popUpProgressError(
-      {required BuildContext context}) {
+  void popUpProgressError({required BuildContext context}) {
     showDialog(
       context: context,
       builder: (context) {
@@ -286,10 +311,11 @@ class HomeworkDetailsGetxController extends GetxController with Helpers {
                   size: 100.h,
                   color: Colors.red,
                 ),
-                Text("الرجاء المحاولة مجدداً !!!",style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: FontSize.s16)),
+                Text("الرجاء المحاولة مجدداً !!!",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: FontSize.s16)),
               ],
             ),
           ),

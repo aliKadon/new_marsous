@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../resources/assets_manager.dart';
+import '../../../resources/font_manager.dart';
+import '../../../widgets/student_widget/student_lesson_item.dart';
 
-import '../../resources/assets_manager.dart';
-import '../../resources/font_manager.dart';
-import '../../widgets/student_widget/student_lesson_item.dart';
+
+
 
 class StudentLessonView extends StatelessWidget {
   const StudentLessonView({super.key});

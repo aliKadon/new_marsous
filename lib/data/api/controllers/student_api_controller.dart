@@ -3,9 +3,10 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
-
 import '../../../models/api_response.dart';
 import '../../../models/course_model.dart';
+import '../../../models/get_task_student_model.dart';
+import '../../../models/get_test_student_model.dart';
 import '../../../models/previouse_session_model.dart';
 import '../../../models/session_model.dart';
 import '../api_helper.dart';
@@ -16,8 +17,7 @@ class StudentApiController with ApiHelper {
 
   Future<List<CourseModel>> getMyCourses(
       {int? pageIndex, int? pageSize}) async {
-    // print("header child get my courses: $sharedTokedChild");
-    // print("header child get my courses: ${sharedTokedChild.isEmpty}");
+
 
     var url = Uri.parse(
         "${ApiSettings.baseUrl}/Student/get-my-courses?pageIndex=$pageIndex&pageSize=$pageSize");
@@ -25,7 +25,6 @@ class StudentApiController with ApiHelper {
       url,
       headers: headers,
     );
-    print("response body get my courses: ${response.body}");
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
       if (jsonData["status"] == 200) {
@@ -41,8 +40,7 @@ class StudentApiController with ApiHelper {
 
   Future<ApiResponse> sendTask(
       {required String sessionId, String? answer, File? file}) async {
-    // print("header child : $sharedTokedChild");
-    // print("header child : ${sharedTokedChild.isEmpty}");
+
     var url = Uri.parse(
         "${ApiSettings.baseUrl}/Student/send-session-task-answer?sessionId=$sessionId&taskAnswer=$answer");
     var request = http.MultipartRequest(
@@ -69,15 +67,12 @@ class StudentApiController with ApiHelper {
 
   Future<PreviousSessionModel?> getPreviousSession(
       {String? courseId, int? pageIndex, int? pageSize}) async {
-    // print("header child : $sharedTokedChild");
-    // print("header child : ${sharedTokedChild.isEmpty}");
+
     var url = Uri.parse(
         "${ApiSettings.baseUrl}/Student/get-my-previous-session?pageIndex=$pageIndex&pageSize=$pageSize&courseId=$courseId");
     var response = await http.get(url, headers: headers);
 
-    print(
-        "student - previous lesson api response status: ${response.statusCode} ");
-    print("student - previous lesson api response body: ${response.body} ");
+
 
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
@@ -94,8 +89,7 @@ class StudentApiController with ApiHelper {
         "${ApiSettings.baseUrl}/Student/get-my-session?pageIndex=$pageIndex&pageSize=$pageSize");
     var response = await http.get(url, headers: headers);
 
-    print("student - my session api response status code: ${response.statusCode}");
-    print("student - my session api response body: ${response.body}");
+
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
       if (jsonData["status"] == 200) {
@@ -107,5 +101,37 @@ class StudentApiController with ApiHelper {
       }
     }
     return [];
+  }
+
+  Future<GetTaskStudentModel?> getStudentTask(
+      {int? pageIndex, int? pageSize}) async {
+    var url = Uri.parse(
+        "${ApiSettings.baseUrl}/Student/get-my-tasks?pageindex=$pageIndex&pageSize=$pageSize");
+    var response = await http.get(url, headers: headers);
+
+
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      if (jsonData["status"] == 200) {
+        return GetTaskStudentModel.fromJson(jsonData["data"]);
+      }
+    }
+    return null;
+  }
+
+  Future<GetTestStudentModel?> getStudentTest(
+      {int? pageIndex, int? pageSize}) async {
+    var url = Uri.parse(
+        "${ApiSettings.baseUrl}/Student/get-my-tests?pageindex=$pageIndex&pageSize=$pageSize");
+    var response = await http.get(url, headers: headers);
+
+
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      if (jsonData["status"] == 200) {
+        return GetTestStudentModel.fromJson(jsonData["data"]);
+      }
+    }
+    return null;
   }
 }

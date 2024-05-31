@@ -300,22 +300,22 @@ class _MainRoutState extends State<MainRout> {
       return true;
     }
 
-    _doubleBackToExitPressedOnce = true;
-    Get.snackbar(
-      'تنبيه',
-      'اضغط زر الرجوع مرة أخرى للخروج من التطبيق',
-      backgroundColor: ColorManager.grey,
-      borderRadius: 25.r,
-    );
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   SnackBar(
-    //       content: Text('Press back again to leave'),
-    //       backgroundColor: ColorManager.grey),
+    // _doubleBackToExitPressedOnce = true;
+    // Get.snackbar(
+    //   'تنبيه',
+    //   'اضغط زر الرجوع مرة أخرى للخروج من التطبيق',
+    //   backgroundColor: ColorManager.grey,
+    //   borderRadius: 25.r,
     // );
-
-    Timer(const Duration(seconds: 2), () {
-      _doubleBackToExitPressedOnce = false;
-    });
+    // // ScaffoldMessenger.of(context).showSnackBar(
+    // //   SnackBar(
+    // //       content: Text('Press back again to leave'),
+    // //       backgroundColor: ColorManager.grey),
+    // // );
+    //
+    // Timer(const Duration(seconds: 2), () {
+    //   _doubleBackToExitPressedOnce = false;
+    // });
     return false;
   }
 }

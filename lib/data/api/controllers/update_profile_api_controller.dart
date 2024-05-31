@@ -21,10 +21,7 @@ class UpdateProfileApiController with ApiHelper {
       await http.MultipartFile.fromPath('file', file.path),
     );
     var response = await request.send();
-    print("response for update profile image : ${response.statusCode}");
-    print("response for update profile image : ${response.reasonPhrase}");
     if (response.statusCode == 200) {
-      print('File uploaded successfully!');
       return ApiResponse(message: "File uploaded successfully!", status: 200);
     }
     return failedResponse;
@@ -32,13 +29,13 @@ class UpdateProfileApiController with ApiHelper {
 
   Future<ApiResponse?> updateProfile({
     String? phoneNumber,
-    String? title,
+    String? country,
     String? firstName,
     String? middleName,
     String? lastName,
-    String? birthDate,
-    String? nationality,
-    String? nationalCardId,
+    String? state,
+    String? city,
+    String? addressDetails,
   }) async {
     var url = Uri.parse("${ApiSettings.baseUrl}/Account/update-my-profile");
     var response = await http.post(
@@ -47,13 +44,13 @@ class UpdateProfileApiController with ApiHelper {
       body: jsonEncode(
         {
           "phoneNumber": phoneNumber,
-          "title": title,
           "firstName": firstName,
           "middleName": middleName,
           "lastName": lastName,
-          "birthDate": birthDate,
-          "nationality": nationality,
-          "nationalCardId": nationalCardId,
+          "country": country,
+          "state": state,
+          "city": city,
+          "addressDetails": addressDetails,
         },
       ),
     );

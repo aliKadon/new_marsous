@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../models/session_model.dart';
-import '../../resources/color_manager.dart';
-import '../../widgets/recording_attendance_item.dart';
-import '../../widgets/shimmer_loading/shimmer_loading_task_test_item.dart';
-import '../home/student_session_getx_controller/student_session_getx_controller.dart';
+import '../../../models/session_model.dart';
+import '../../../resources/color_manager.dart';
+import '../../../widgets/recording_attendance_item.dart';
+import '../../../widgets/shimmer_loading/shimmer_loading_task_test_item.dart';
+import '../../home/student_session_getx_controller/student_session_getx_controller.dart';
+import '../controller/lesson_getx_controller.dart';
 
 class RecordingAttendanceView extends StatefulWidget {
-  const RecordingAttendanceView({super.key});
+  final String sessionId;
+
+  const RecordingAttendanceView({super.key, required this.sessionId});
 
   @override
   State<RecordingAttendanceView> createState() =>
@@ -22,13 +24,19 @@ class _RecordingAttendanceViewState extends State<RecordingAttendanceView> {
   //controller
   final StudentSessionGetXController studentSessionGetXController =
       Get.put(StudentSessionGetXController());
+  final LessonGetXController _lessonGetXController =
+      Get.put(LessonGetXController());
 
   int? isSelected;
 
   @override
   void initState() {
+    //"817ee717-a117-4dfd-565e-08dc5d344e17"
+    //"1c547486-01bd-4c77-5662-08dc5d344e17"
     studentSessionGetXController.getStudentSession(
-        sessionId: "7aa78136-5702-431d-0d44-08dc586e73a0");
+        context: context, sessionId: widget.sessionId);
+    // studentSessionGetXController.getStudentSession(
+    //     context: context, sessionId: "c550f6bd-f609-4ff1-5667-08dc5d344e17");
     super.initState();
   }
 
@@ -87,45 +95,53 @@ class _RecordingAttendanceViewState extends State<RecordingAttendanceView> {
                         return getShimmerLoading();
                       },
                     ))
-                  : Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: controller.studentSession.length,
-                        itemBuilder: (context, index) {
-                          Get.put<SessionModel>(
-                              controller.studentSession[index],
-                              tag: "${controller.studentSession[index].id}");
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isSelected = index;
-                              });
-                            },
-                            child: isSelected == null
-                                ? RecordingAttendanceItem(
-                                    tag:
-                                        "${controller.studentSession[index].id}",
-                                    isSelected: false,
-                                    isFlex: true,
-                                  )
-                                : isSelected == index
+                  : controller.teacherApiController.apiResponse!.status == 400
+                      ? Expanded(
+                          child: Center(
+                          child: Text(
+                              textAlign: TextAlign.center,
+                              "${controller.teacherApiController.apiResponse!.message}\nيرجى محاولة تسجيل الحضور قبل ساعة من بدء الجلسة"),
+                        ))
+                      : Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: controller.studentSession.length,
+                            itemBuilder: (context, index) {
+                              Get.put<SessionModel>(
+                                  controller.studentSession[index],
+                                  tag:
+                                      "${controller.studentSession[index].id}");
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isSelected = index;
+                                  });
+                                },
+                                child: isSelected == null
                                     ? RecordingAttendanceItem(
-                                        tag:
-                                            "${controller.studentSession[index].id}",
-                                        isSelected: true,
-                                        isFlex: true,
-                                      )
-                                    : RecordingAttendanceItem(
                                         tag:
                                             "${controller.studentSession[index].id}",
                                         isSelected: false,
                                         isFlex: true,
-                                      ),
-                          );
-                        },
-                      ),
-                    ),
+                                      )
+                                    : isSelected == index
+                                        ? RecordingAttendanceItem(
+                                            tag:
+                                                "${controller.studentSession[index].id}",
+                                            isSelected: true,
+                                            isFlex: true,
+                                          )
+                                        : RecordingAttendanceItem(
+                                            tag:
+                                                "${controller.studentSession[index].id}",
+                                            isSelected: false,
+                                            isFlex: true,
+                                          ),
+                              );
+                            },
+                          ),
+                        ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
@@ -149,7 +165,15 @@ class _RecordingAttendanceViewState extends State<RecordingAttendanceView> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25.r)),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      if (studentSessionGetXController
+                              .teacherApiController.apiResponse!.status ==
+                          200) {
+                        // _lessonGetXController.attendanceList = [];
+                        _lessonGetXController.submitAttendanceCheckList(
+                            context: context);
+                      }
+                    },
                     child: const Text("تأكيد",
                         style: TextStyle(color: Colors.white))),
               ),

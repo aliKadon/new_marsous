@@ -1,9 +1,8 @@
-
 import 'package:marsous1/models/session_model.dart';
 
 class PreviousSessionModel {
   List<SessionModel>? old;
-  SessionModel? upcomming;
+  List<SessionModel>? upcomming;
 
   PreviousSessionModel({
     this.old,
@@ -17,7 +16,6 @@ class PreviousSessionModel {
               (x) => SessionModel.fromJson(x),
             ),
           ),
-          upcomming: json["upcomming"] == null
-              ? null
-              : SessionModel.fromJson(json["upcomming"]));
+          upcomming: List<SessionModel>.from(json["upcomming"]
+              .map((x) => SessionModel.fromJson(x))));
 }

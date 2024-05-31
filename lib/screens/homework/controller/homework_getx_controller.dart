@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:marsous1/models/old_upcoming_task_test_model.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 import '../../../app/utils/helpers.dart';
+import '../../../data/api/controllers/teacher_api_controller.dart';
 import '../../../resources/color_manager.dart';
 import '../../../resources/font_manager.dart';
 import '../../../resources/values_manager.dart';
@@ -11,6 +13,11 @@ import '../../../resources/values_manager.dart';
 class HomeworkGetxController extends GetxController {
   String? birthDateTo;
   String? birthDate;
+  OldUpcomingTaskTestModel? taskList;
+
+  bool isLoading = true;
+
+  final TeacherApiController _teacherApiController = TeacherApiController();
 
   //controller
   late final TextEditingController selectDateTextEditingController =
@@ -21,6 +28,22 @@ class HomeworkGetxController extends GetxController {
   TextEditingController();
   late final TextEditingController homeworkLessonTextEditingController =
   TextEditingController();
+
+
+  void getTaskList({int? pageIndex = 1, int? pageSize = 20}) async {
+    isLoading = true;
+    try {
+      taskList = await _teacherApiController.getTaskList(
+          pageSize: pageSize, pageIndex: pageIndex);
+      isLoading = false;
+      update();
+    } catch (e) {
+      print("teacher - get task list error : $e");
+      isLoading = false;
+    }
+  }
+
+
 
   // select date.
   void selectDateFrom({

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
+import '../models/session_model.dart';
 import '../resources/color_manager.dart';
 import '../resources/font_manager.dart';
 
 class PreviousLessonFlexItem extends StatelessWidget {
-  const PreviousLessonFlexItem({super.key});
+  final SessionModel sessionModel;
+  const PreviousLessonFlexItem({super.key,required this.sessionModel});
 
 
   @override
@@ -29,7 +32,7 @@ class PreviousLessonFlexItem extends StatelessWidget {
                     width: 5.w,
                   ),
                   Text(
-                    "الخميس | 16 مارس 2023",
+                    DateFormat('yMMMMEEEEd', 'ar').format(DateTime.parse(sessionModel.date!)),
                     style:
                     TextStyle(color: Colors.black, fontSize: FontSize.s14),
                   ),

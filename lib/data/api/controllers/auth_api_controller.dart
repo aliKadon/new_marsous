@@ -9,7 +9,6 @@ import '../api_helper.dart';
 import '../api_settings.dart';
 
 class AuthApiController with ApiHelper {
-
   Future<ApiResponse> login(
       {required String userName, required String password}) async {
     Uri uri = Uri.parse("${ApiSettings.baseUrl}/Account/login");
@@ -20,16 +19,9 @@ class AuthApiController with ApiHelper {
           'password': password,
           // 'fcm_token': "asdasd",
           'fcm_token': await FirebaseMessagingService.instance.getToken(),
-          'langCode' :SharedPrefController().lang1,
+          'langCode': SharedPrefController().lang1,
         }));
-    // print('111');
-    // print('============================================log in');
-    // print(response.statusCode);
-    // print(response.body);
     if (response.statusCode == 200) {
-      // print('222');
-      // print('======================================fcm');
-      // print(' ++++++++++====================this is fcm ${await FirebaseMessagingService.instance.getToken()}');
       var jsonResponse = jsonDecode(response.body);
       if (jsonResponse['status'] == 200) {
         SharedPrefController().setToken(jsonResponse['data']);
@@ -41,5 +33,37 @@ class AuthApiController with ApiHelper {
       );
     }
     return failedResponse;
+  }
+
+  Future<ApiResponse?> forgetPassword({required String username}) async {
+    var url = Uri.parse(
+        "${ApiSettings.baseUrl}/Account/forgot-password?username=$username");
+    var response = await http.post(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      if (jsonData["status"] == 200) {
+        return ApiResponse(
+            message: jsonData["message"], status: jsonData["status"]);
+      }
+    }
+    return null;
+  }
+
+  Future<ApiResponse?> refreshFcm({required String newFcm}) async {
+    var url = Uri.parse(
+        "${ApiSettings.baseUrl}/Account/reset-fcm-token?fcm_token=$newFcm");
+    var response = await http.post(url, headers: headers);
+
+
+
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      if (jsonData["status"] == 200) {
+        return ApiResponse(
+            message: jsonData["message"], status: jsonData["status"]);
+      }
+    }
+    return null;
   }
 }
