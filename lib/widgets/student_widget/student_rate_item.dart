@@ -81,7 +81,7 @@ class _StudentRateItemState extends State<StudentRateItem> with Helpers {
                                   onChanged: (value) {
                                     print('changing value to: $value');
                                     var index = controller.suraListString
-                                        .indexOf(value);
+                                        .indexOf(value!);
                                     print(
                                         "id of the surah : ${controller.surahList[index].id}");
                                     if (widget.title == "التسميع") {
